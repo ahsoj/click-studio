@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="canvas"
+    height="auto" version="1.1" viewBox="0 0 781 512" width="auto"
+    style="width: auto; height: auto; transform: translate(0, 10%);">
+    <defs>
+        <linearGradient
+            gradientTransform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,0,0)"
+            id="SvgjsLinearGradient1072">
+            <stop stop-color="#4dbce900" offset="0" />
+            <stop stop-color="#7a4de9" offset="1" />
+        </linearGradient>
+        <linearGradient
+            gradientTransform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,0,0)">
+            <stop stop-color="#ffffff00" offset="0" />
+            <stop stop-color="#ffffff" offset="1" />
+        </linearGradient>
+        <linearGradient
+            gradientTransform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,0,0)">
+            <stop stop-color="#d1e75100" offset="0" />
+            <stop stop-color="#51e767" offset="1" />
+        </linearGradient>
+        <linearGradient
+            gradientTransform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,0,0)">
+            <stop stop-color="#26ade400" offset="0" />
+            <stop stop-color="#5d26e4" offset="1" />
+        </linearGradient>
+        <linearGradient
+            gradientTransform="matrix(6.123233995736766e-17,1,-1,6.123233995736766e-17,0,0)">
+            <stop stop-color="#00000000" offset="0" />
+            <stop stop-color="#000000" offset="1" />
+        </linearGradient>
+    </defs>
+    <circle r="30" cx="400.6662528593873" cy="402.88537287683016" opacity="0.5"
+        fill="url(#SvgjsLinearGradient1072)" />
+    <circle r="68.9219012998221" cx="400.6662528593873" cy="402.88537287683016" opacity="0.5"
+        fill="url(#SvgjsLinearGradient1072)" />
+    <circle r="112.11578456539655" cx="400.6662528593873" cy="402.88537287683016" opacity="0.5"
+        fill="url(#SvgjsLinearGradient1072)" />
+    <circle r="158.3409492927473" cx="400.6662528593873" cy="402.88537287683016" opacity="0.5"
+        fill="url(#SvgjsLinearGradient1072)" />
+    <circle r="206.9594492191822" cx="400.6662528593873" cy="402.88537287683016" opacity="0.5"
+        fill="url(#SvgjsLinearGradient1072)" />
+    <circle r="257.57443459894597" cx="400.6662528593873" cy="402.88537287683016" opacity="0.5"
+        fill="url(#SvgjsLinearGradient1072)" />
+</svg>
