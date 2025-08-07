@@ -62,7 +62,7 @@ export default function HeroSection() {
               </Link>
             </Button>
             <Button
-              variant="outline"
+              variant="outline-glow"
               size="lg"
               className="border-brand-lime text-brand-lime hover:bg-brand-lime hover:text-brand-dark px-8 py-4 text-lg rounded-full transition-all duration-200 hover:scale-105"
             >

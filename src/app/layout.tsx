@@ -7,6 +7,11 @@ import Footer from "@/components/footer";
 // import { Toaster } from "@/components/ui/sonner"
 const Navigation = dynamic(() => import("@/components/navigation"));
 
+const domain: string | URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://studio.lehustler.com";
+
 export const metadata: Metadata = {
   title: "CLICK.STUDIO - High-Converting Websites for Local Businesses",
   description:
@@ -26,12 +31,12 @@ export const metadata: Metadata = {
     description:
       "We create modern, high-converting websites for local businesses, startups, and content creators. Professional web design and development services.",
     type: "website",
-    url: "https://click.studio",
+    url: domain,
     siteName: "CLICK.STUDIO",
     locale: "en_US",
     images: [
       {
-        url: "https://lovable.dev/opengraph-image-p98pqg.png",
+        url: `${domain}/opengraph-image-p98pqg.png`,
         width: 1200,
         height: 630,
         alt: "CLICK.STUDIO Open Graph Image",
@@ -43,14 +48,46 @@ export const metadata: Metadata = {
     site: "@lovable_dev",
     description:
       "We create modern, high-converting websites for local businesses, startups, and content creators. Professional web design and development services.",
-    images: ["https://lovable.dev/opengraph-image-p98pqg.png"],
+    images: [`${domain}/opengraph-image-p98pqg.png`],
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
-  metadataBase: new URL("https://click.studio"),
+  icons: [
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      url: "/favicon-16x16.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      url: "/favicon-32x32.png",
+    },
+    {
+      rel: "icon",
+      sizes: "192x192",
+      type: "image/png",
+      url: "/android-chrome-192x192.png",
+    },
+    {
+      rel: "icon",
+      sizes: "512x512",
+      type: "image/png",
+      url: "/android-chrome-512x512.png",
+    },
+    {
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+      url: "/apple-touch-ocon.png",
+    },
+    {
+      rel: "shortcut icon",
+      url: "/favicon.ico",
+    },
+  ],
+  metadataBase: new URL(domain),
   alternates: {
-    canonical: "https://click.studio",
+    canonical: domain,
   },
 };
 
@@ -58,8 +95,8 @@ const businessSchema: WithContext<LocalBusiness> = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   name: "CLICK.STUDIO",
-  url: "https://click.studio",
-  logo: "https://lovable.dev/opengraph-image-p98pqg.png",
+  url: domain,
+  logo: `${domain}/opengraph-image-p98pqg.png`,
   description:
     "We create modern, high-converting websites for local businesses, startups, and content creators. Professional web design and development services.",
   address: {
@@ -81,6 +118,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <link
+          href="https://calendly.com/assets/external/widget.css"
+          rel="stylesheet"
+        />
+        <Script
+          type="text/javascript"
+          src="https://assets.calendly.com/assets/external/widget.js"
+          async
+        ></Script>
         <Script
           id="ld-json"
           type="application/ld+json"

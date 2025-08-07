@@ -236,7 +236,7 @@ export default function Services() {
             asChild
             className="bg-background hover:bg-background/90 text-foreground px-8 py-3"
           >
-            <a href="'/transparent-package-calculator'">Get Quote</a>
+            <a href="/transparent-pricing-calculator">Get Quote</a>
           </Button>
         </div>
       </section>
