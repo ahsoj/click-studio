@@ -7,14 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Calendar,
-  Clock,
-  CheckCircle,
-  Users,
-  ArrowRight,
-  CalendarDays,
-} from "lucide-react";
+import { Calendar, Clock, CheckCircle, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const ScheduleCallPage = () => {
@@ -67,26 +60,29 @@ const ScheduleCallPage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="py-20 lg:py-32">
+      <section className="mt-10 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold mb-6">
               Schedule a<span className="gradient-text"> Strategy Call</span>
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
               Ready to transform your digital presence? Book a free consultation
               with our experts to discuss your project and discover how we can
               help your business grow online.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild variant="hero" size="lg">
+              {/* <Button asChild variant="hero" size="lg">
                 <Link href="/schedule-a-call/#calendar">
                   Book Your Call Now
                   <CalendarDays className="ml-2 h-5 w-5" />
                 </Link>
-              </Button>
-              <Button variant="outline-glow" size="lg">
-                Learn More About Our Process
+              </Button> */}
+              <CalendlyEmbedComponent />
+              <Button variant="outline-glow" asChild size="lg">
+                <Link href="/schedule-a-call/#process-steps">
+                  Learn More About Our Process
+                </Link>
               </Button>
             </div>
           </div>
@@ -94,14 +90,18 @@ const ScheduleCallPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 lg:py-24">
+      <section
+        data-aos="fade-up"
+        data-aos-anchor-placement="top-bottom"
+        className="py-16 lg:py-24"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-medium mb-4">
               Why Schedule a Call with{" "}
               <span className="gradient-text">Click Studio</span>?
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               Get personalized insights and actionable strategies for your
               digital transformation journey.
             </p>
@@ -134,10 +134,15 @@ const ScheduleCallPage = () => {
       </section>
 
       {/* Process Steps */}
-      <section className="py-16 lg:py-24 bg-secondary/20">
+      <section
+        data-aos="fade-up"
+        data-aos-anchor-placement="top-bottom"
+        id="process-steps"
+        className="py-16 lg:py-24 bg-secondary/20"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-medium mb-4">
               Simple <span className="gradient-text">3-Step Process</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -148,7 +153,12 @@ const ScheduleCallPage = () => {
 
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
             {steps.map((step, index) => (
-              <div key={index} className="text-center relative">
+              <div
+                data-aos="fade-up"
+                data-aos-anchor-placement="top-bottom"
+                key={index}
+                className="text-center relative"
+              >
                 <div className="mb-6">
                   <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground text-2xl font-bold">
                     {step.step}
@@ -157,7 +167,7 @@ const ScheduleCallPage = () => {
                 <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
                 <p className="text-muted-foreground">{step.description}</p>
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-full w-full">
+                  <div className="hidden md:block absolute top-8 left-1/2 w-full">
                     <ArrowRight className="h-6 w-6 text-accent mx-auto" />
                   </div>
                 )}
@@ -168,21 +178,13 @@ const ScheduleCallPage = () => {
       </section>
 
       {/* Calendly Integration Section */}
-      <section id="calendar" className="py-16 lg:py-24">
+      <section
+        data-aos="fade-up"
+        data-aos-anchor-placement="top-bottom"
+        id="calendar"
+        className="py-16 lg:py-24"
+      >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Choose Your <span className="gradient-text">Perfect Time</span>
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Select a time that works best for you. All times are shown in your
-              local timezone.
-            </p>
-          </div>
-
-          {/* Calendly Widget Container */}
-          <CalendlyEmbedComponent url="https://calendly.com/dev4josh/30min" />
-
           <div className="text-center mt-8">
             <p className="text-muted-foreground mb-4">
               Can&#39;t find a suitable time? No problem!

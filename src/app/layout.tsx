@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    site: "@lovable_dev",
+    site: "@dev4josh",
     description:
       "We create modern, high-converting websites for local businesses, startups, and content creators. Professional web design and development services.",
     images: [`${domain}/opengraph-image-p98pqg.png`],
@@ -126,6 +126,7 @@ export default function RootLayout({
           type="text/javascript"
           src="https://assets.calendly.com/assets/external/widget.js"
           async
+          strategy="afterInteractive"
         ></Script>
         <Script
           id="ld-json"
