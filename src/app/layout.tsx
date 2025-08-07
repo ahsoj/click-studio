@@ -10,7 +10,7 @@ const Navigation = dynamic(() => import("@/components/navigation"));
 const domain: string | URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"
-    : "https://studio.lehustler.com";
+    : "https://click.lehustler.com";
 
 export const metadata: Metadata = {
   title: "CLICK.STUDIO - High-Converting Websites for Local Businesses",
