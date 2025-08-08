@@ -1,4 +1,4 @@
-import PackageSelector from "@/components/package-selector";
+import PricingForm from "@/components/pricing-form";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ export default function PackageCalculator() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="max-w-7xl mt-10 mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-medium mb-4">
             <span className="text-foreground">Choose Your </span>
@@ -33,7 +33,9 @@ export default function PackageCalculator() {
         </div>
 
         {/* Package Selection */}
-        <PackageSelector />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <PricingForm />
+        </div>
       </div>
     </div>
   );

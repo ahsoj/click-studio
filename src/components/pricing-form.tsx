@@ -1,8 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -12,19 +14,31 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
   Calculator,
   Check,
   Palette,
   Search,
   Wrench,
   MessageSquare,
-  User,
-  Mail,
-  Phone,
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
-export default function PricingForm() {
+const PricingForm = () => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [projectComplexity, setProjectComplexity] = useState("");
   const [timeline, setTimeline] = useState("");
@@ -33,37 +47,44 @@ export default function PricingForm() {
     email: "",
     phone: "",
   });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [additionalNotes, setAdditionalNotes] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   const services = [
     {
       id: "web-design",
       name: "Web Design",
-      icon: <Palette className="w-6 h-6 text-primary" />,
-      basePrice: 1200,
+      icon: <Palette className="w-6 h-6" />,
+      basePrice: 10000,
       description: "Modern, responsive website design",
     },
     {
       id: "seo",
       name: "SEO Optimization",
-      icon: <Search className="w-6 h-6 text-primary" />,
-      basePrice: 800,
+      icon: <Search className="w-6 h-6" />,
+      basePrice: 5000,
       description: "Search engine optimization for better visibility",
     },
     {
       id: "maintenance",
       name: "Website Maintenance",
-      icon: <Wrench className="w-6 h-6 text-primary" />,
-      basePrice: 150,
+      icon: <Wrench className="w-6 h-6" />,
+      basePrice: 7500,
       description: "Monthly website maintenance and updates",
     },
     {
       id: "telegram-bot",
-      name: "Telegram Bot Development",
-      icon: <MessageSquare className="w-6 h-6 text-primary" />,
-      basePrice: 600,
+      name: "Telegram Bot",
+      icon: <MessageSquare className="w-6 h-6" />,
+      basePrice: 10000,
       description: "Custom Telegram bot development",
     },
   ];
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-US").format(price);
+  };
 
   const complexityMultipliers = {
     simple: { label: "Simple", multiplier: 1 },
@@ -119,16 +140,14 @@ export default function PricingForm() {
     return Math.round(total);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleConfirm = () => {
     if (selectedServices.length === 0) {
-      toast.info("Please select at least one service");
+      toast.error("Please select at least one service");
       return;
     }
 
     if (!customerInfo.name || !customerInfo.email) {
-      toast.info("Please fill in your name and email");
+      toast.error("Please fill in your name and email");
       return;
     }
 
@@ -149,186 +168,171 @@ export default function PricingForm() {
         : "Not specified",
       total: calculateTotal(),
       customer: customerInfo,
+      notes: additionalNotes,
     };
 
     console.log("Quote Details:", quoteDetails);
+
+    setIsDialogOpen(false);
+    setSubmitted(true);
 
     toast.success("Quote request sent successfully!", {
       description:
         "We'll contact you within 24 hours with your custom proposal.",
     });
-
-    // Reset form
-    setSelectedServices([]);
-    setProjectComplexity("");
-    setTimeline("");
-    setCustomerInfo({ name: "", email: "", phone: "" });
   };
 
   const total = calculateTotal();
 
+  if (submitted) {
+    return (
+      <div className="max-w-2xl mx-auto text-center py-24">
+        <div className="bg-gray-900/50 border-gray-700 hover:bg-gray-800/50 rounded-2xl p-10 border">
+          <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-green-300/25">
+            <Check className="h-12 w-12 text-green-600" />
+          </div>
+          <h3 className="text-2xl font-bold text-foreground font-bricolage">
+            Thank you!
+          </h3>
+          <p className="mt-2 text-muted-foreground">
+            We’ve received your request and will contact you ASAP.
+          </p>
+          <Button
+            className="mt-6 bg-primary hover:bg-primary/90 text-primary-foreground"
+            onClick={() => {
+              setSubmitted(false);
+              setSelectedServices([]);
+              setProjectComplexity("");
+              setTimeline("");
+              setCustomerInfo({ name: "", email: "", phone: "" });
+              setAdditionalNotes("");
+            }}
+          >
+            Start a new quote
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Form Section */}
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form className="space-y-8">
             {/* Services Selection */}
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4 font-bricolage">
+              <h3 className="text-xl font-bold text-foreground mb-4 font-bricolage">
                 Select Services
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {services.map((service) => (
-                  <div
+                  <Card
                     key={service.id}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                    className={`cursor-pointer transition-all border-2 ${
                       selectedServices.includes(service.id)
-                        ? "border-primary bg-secondary"
-                        : "border-primary/10 hover:border-primary/30"
+                        ? "border-primary ring-1 ring-primary/40 bg-primary/5"
+                        : "cursor-pointer bg-gray-800/50 border-gray-700 rounded-2xl p-6 border"
                     }`}
                     onClick={() => toggleService(service.id)}
                   >
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`${
-                          selectedServices.includes(service.id)
-                            ? "text-primary"
-                            : "text-secondary-foreground/60"
-                        }`}
-                      >
-                        {service.icon}
+                    <CardHeader className="flex flex-row items-start gap-4 pb-2">
+                      <div className="flex-1 flex items-center justify-between">
+                        <CardTitle className="text-lg font-semibold text-foreground">
+                          <p className="text-xl font-semibold text-primary mt-2">
+                            Starting at {formatPrice(service.basePrice)} ETB
+                          </p>
+                        </CardTitle>
+                        {selectedServices.includes(service.id) && (
+                          <Check className="w-5 h-5 text-primary" />
+                        )}
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-gray-900">
-                            {service.name}
-                          </h4>
-                          {selectedServices.includes(service.id) && (
-                            <Check className="w-5 h-5 text-primary" />
-                          )}
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <CardDescription>
+                        <div className="flex items-center text-lg gap-x-2">
+                          <div
+                            className={`${
+                              selectedServices.includes(service.id)
+                                ? "text-primary"
+                                : "text-muted-foreground"
+                            }`}
+                          >
+                            {service.icon}
+                          </div>
+                          {service.name}
                         </div>
-                        <p className="text-sm text-secondary-foreground mt-1">
-                          {service.description}
-                        </p>
-                        <p className="text-sm font-semibold text-primary mt-2">
-                          Starting at ${service.basePrice}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                        <p className="text-base">{service.description}</p>
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
 
-            {/* Project Complexity */}
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4 font-bricolage">
-                Project Complexity
-              </h3>
-              <RadioGroup
-                value={projectComplexity}
-                onValueChange={setProjectComplexity}
-              >
-                {Object.entries(complexityMultipliers).map(
-                  ([key, { label, multiplier }]) => (
-                    <div key={key} className="flex items-center space-x-2">
-                      <RadioGroupItem value={key} id={key} />
-                      <Label htmlFor={key} className="flex-1 cursor-pointer">
-                        {label}{" "}
-                        {multiplier > 1 &&
-                          `(+${Math.round((multiplier - 1) * 100)}%)`}
-                      </Label>
-                    </div>
-                  )
-                )}
-              </RadioGroup>
-            </div>
-
-            {/* Timeline */}
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4 font-bricolage">
-                Project Timeline
-              </h3>
-              <Select value={timeline} onValueChange={setTimeline}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select timeline" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(timelineMultipliers).map(
+            <div className="flex flex-col md:flex-row gap-4 justify-between w-full">
+              {/* Project Complexity */}
+              <div className="flex-1/2">
+                <h3 className="text-xl font-bold text-foreground mb-4 font-bricolage">
+                  Project Complexity
+                </h3>
+                <RadioGroup
+                  value={projectComplexity}
+                  onValueChange={setProjectComplexity}
+                >
+                  {Object.entries(complexityMultipliers).map(
                     ([key, { label, multiplier }]) => (
-                      <SelectItem key={key} value={key}>
-                        {label}{" "}
-                        {multiplier > 1 &&
-                          `(+${Math.round((multiplier - 1) * 100)}%)`}
-                      </SelectItem>
+                      <div key={key} className="flex items-center space-x-2">
+                        <RadioGroupItem value={key} id={key} />
+                        <Label htmlFor={key} className="flex-1 cursor-pointer">
+                          {label}{" "}
+                          {multiplier > 1 &&
+                            `(+${Math.round((multiplier - 1) * 100)}%)`}
+                        </Label>
+                      </div>
                     )
                   )}
-                </SelectContent>
-              </Select>
-            </div>
+                </RadioGroup>
+              </div>
 
-            {/* Customer Information */}
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4 font-bricolage">
-                Your Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="name">Name *</Label>
-                  <Input
-                    id="name"
-                    value={customerInfo.name}
-                    onChange={(e) =>
-                      setCustomerInfo((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
-                    placeholder="Your full name"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={customerInfo.email}
-                    onChange={(e) =>
-                      setCustomerInfo((prev) => ({
-                        ...prev,
-                        email: e.target.value,
-                      }))
-                    }
-                    placeholder="your@email.com"
-                    required
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={customerInfo.phone}
-                    onChange={(e) =>
-                      setCustomerInfo((prev) => ({
-                        ...prev,
-                        phone: e.target.value,
-                      }))
-                    }
-                    placeholder="+1 (555) 123-4567"
-                  />
-                </div>
+              {/* Timeline */}
+              <div className="flex-1/2">
+                <h3 className="text-xl font-bold text-foreground mb-4 font-bricolage">
+                  Project Timeline
+                </h3>
+                <Select value={timeline} onValueChange={setTimeline}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select timeline" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(timelineMultipliers).map(
+                      ([key, { label, multiplier }]) => (
+                        <SelectItem key={key} value={key}>
+                          {label}{" "}
+                          {multiplier > 1 &&
+                            `(+${Math.round((multiplier - 1) * 100)}%)`}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             <Button
-              type="submit"
+              type="button"
               size="lg"
-              className="w-full bg-primary/90 hover:bg-primary text-white font-bricolage"
+              onClick={() => {
+                if (selectedServices.length === 0) {
+                  toast.error("Please select at least one service");
+                  return;
+                }
+                setIsDialogOpen(true);
+              }}
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bricolage"
             >
-              Send Quote Request
+              Review & Continue
             </Button>
           </form>
         </div>
@@ -336,21 +340,21 @@ export default function PricingForm() {
         {/* Quote Summary */}
         <div className="lg:col-span-1">
           <div className="sticky top-24">
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+            <div className="bg-gray-900/50 border-gray-700 rounded-2xl p-8 border">
               <div className="flex items-center gap-2 mb-4">
                 <Calculator className="w-6 h-6 text-primary" />
-                <h3 className="text-xl font-bold text-gray-900 font-bricolage">
+                <h3 className="text-xl font-bold text-foreground font-bricolage">
                   Quote Summary
                 </h3>
               </div>
 
               {selectedServices.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">
+                    <h4 className="font-semibold text-foreground mb-3">
                       Selected Services:
                     </h4>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {selectedServices.map((serviceId) => {
                         const service = services.find(
                           (s) => s.id === serviceId
@@ -358,88 +362,60 @@ export default function PricingForm() {
                         return service ? (
                           <li
                             key={serviceId}
-                            className="flex justify-between text-sm"
+                            className="flex justify-between text-base"
                           >
                             <span>{service.name}</span>
-                            <span>${service.basePrice}</span>
+                            <span>{formatPrice(service.basePrice)} ETB</span>
                           </li>
                         ) : null;
                       })}
-                      {projectComplexity && (
-                        <div className="text-sm">
-                          <span className="text-secondary-foreground">Complexity: </span>
-                          <span className="font-medium">
-                            {
-                              complexityMultipliers[
-                                projectComplexity as keyof typeof complexityMultipliers
-                              ].label
-                            }
-                          </span>
-                        </div>
-                      )}
-
-                      {timeline && (
-                        <div className="text-sm">
-                          <span className="text-secondary-foreground">Timeline: </span>
-                          <span className="font-medium">
-                            {
-                              timelineMultipliers[
-                                timeline as keyof typeof timelineMultipliers
-                              ].label
-                            }
-                          </span>
-                        </div>
-                      )}
                     </ul>
                   </div>
 
-                  {/* Contact Information Display */}
-                  {(customerInfo.name ||
-                    customerInfo.email ||
-                    customerInfo.phone) && (
-                    <div className="border-t border-gray-300 pt-4">
-                      <h4 className="font-semibold text-gray-900 mb-2">
-                        Contact Information:
-                      </h4>
-                      <div className="space-y-2 text-sm">
-                        {customerInfo.name && (
-                          <div className="flex items-center gap-2">
-                            <User className="w-4 h-4 text-secondary-foreground/80" />
-                            <span>{customerInfo.name}</span>
-                          </div>
-                        )}
-                        {customerInfo.email && (
-                          <div className="flex items-center gap-2">
-                            <Mail className="w-4 h-4 text-secondary-foreground/80" />
-                            <span>{customerInfo.email}</span>
-                          </div>
-                        )}
-                        {customerInfo.phone && (
-                          <div className="flex items-center gap-2">
-                            <Phone className="w-4 h-4 text-secondary-foreground/80" />
-                            <span>{customerInfo.phone}</span>
-                          </div>
-                        )}
-                      </div>
+                  {projectComplexity && (
+                    <div className="text-base">
+                      <span className="text-muted-foreground">
+                        Complexity:{" "}
+                      </span>
+                      <span className="font-medium">
+                        {
+                          complexityMultipliers[
+                            projectComplexity as keyof typeof complexityMultipliers
+                          ].label
+                        }
+                      </span>
                     </div>
                   )}
 
-                  <div className="border-t border-gray-300 pt-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-lg font-bold text-gray-900">
-                        Estimated Total:
-                      </span>
-                      <span className="text-2xl font-bold text-primary">
-                        ${total}
+                  {timeline && (
+                    <div className="text-base">
+                      <span className="text-muted-foreground">Timeline: </span>
+                      <span className="font-medium">
+                        {
+                          timelineMultipliers[
+                            timeline as keyof typeof timelineMultipliers
+                          ].label
+                        }
                       </span>
                     </div>
-                    <p className="text-xs text-secondary-foreground/80 mt-2">
+                  )}
+
+                  <div className="border-t border-border pt-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-base md:text-lg font-bold text-foreground">
+                        Estimated Total:
+                      </span>
+                      <span className="text-lg md:text-2xl font-bold text-primary">
+                        {formatPrice(total)} ETB
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
                       *Final price may vary based on specific requirements
                     </p>
                   </div>
                 </div>
               ) : (
-                <p className="text-secondary-foreground text-center py-8">
+                <p className="text-muted-foreground text-center py-8">
                   Select services to see your quote
                 </p>
               )}
@@ -447,6 +423,212 @@ export default function PricingForm() {
           </div>
         </div>
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader className="px-4">
+            <DialogTitle>Confirm your package</DialogTitle>
+            <DialogDescription>
+              Review your selections and provide your contact details. We&#39;ll
+              reach out ASAP.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 p-4">
+            <div>
+              <h4 className="font-semibold text-foreground">
+                Selected Services
+              </h4>
+              <ul className="mt-2 space-y-2 text-base">
+                {selectedServices.map((serviceId) => {
+                  const service = services.find((s) => s.id === serviceId);
+                  return service ? (
+                    <li key={serviceId} className="flex justify-between">
+                      <span>{service.name}</span>
+                      <span>${service.basePrice}</span>
+                    </li>
+                  ) : null;
+                })}
+              </ul>
+            </div>
+
+            {projectComplexity && (
+              <div className="text-base">
+                <span className="text-muted-foreground">Complexity: </span>
+                <span className="font-medium">
+                  {
+                    complexityMultipliers[
+                      projectComplexity as keyof typeof complexityMultipliers
+                    ].label
+                  }
+                </span>
+              </div>
+            )}
+
+            {timeline && (
+              <div className="text-base">
+                <span className="text-muted-foreground">Timeline: </span>
+                <span className="font-medium">
+                  {
+                    timelineMultipliers[
+                      timeline as keyof typeof timelineMultipliers
+                    ].label
+                  }
+                </span>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center border-t pt-3">
+              <span className="text-lg font-bold text-foreground">
+                Estimated Total:
+              </span>
+              <span className="text-2xl font-bold text-primary">${total}</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div className="spcae-y-3">
+                <Label htmlFor="modal-name">Name *</Label>
+                <Input
+                  id="modal-name"
+                  value={customerInfo.name}
+                  onChange={(e) =>
+                    setCustomerInfo((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  placeholder="Your full name"
+                  required
+                />
+              </div>
+              <div className="spcae-y-3">
+                <Label htmlFor="modal-email">Email *</Label>
+                <Input
+                  id="modal-email"
+                  type="email"
+                  value={customerInfo.email}
+                  onChange={(e) =>
+                    setCustomerInfo((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }))
+                  }
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2 space-y-3">
+                <Label htmlFor="modal-phone">Phone Number</Label>
+                <Input
+                  id="modal-phone"
+                  type="tel"
+                  value={customerInfo.phone}
+                  onChange={(e) =>
+                    setCustomerInfo((prev) => ({
+                      ...prev,
+                      phone: e.target.value,
+                    }))
+                  }
+                  placeholder="+1 (555) 123-4567"
+                />
+              </div>
+              <div className="md:col-span-2 space-y-3">
+                <Label htmlFor="requirements">Additional requirements</Label>
+                <Textarea
+                  id="requirements"
+                  value={additionalNotes}
+                  onChange={(e) => setAdditionalNotes(e.target.value)}
+                  placeholder="Tell us more about your project goals, scope, and requirements..."
+                  className="max-h-60"
+                  rows={4}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="px-6">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              Back
+            </Button>
+            <Button
+              onClick={handleConfirm}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              Confirm & Send
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-}
+};
+
+export default PricingForm;
+
+// interface Package {
+//   id: string;
+//   name: string;
+//   price: number;
+//   features: string[];
+//   popular?: boolean;
+// }
+
+// const packages: Package[] = [
+//   {
+//     id: "basic",
+//     name: "Basic Website",
+//     price: 15000,
+//     features: [
+//       "5-page responsive website",
+//       "Modern design",
+//       "Mobile optimization",
+//       "Basic SEO setup",
+//       "Contact form",
+//       "3 months support",
+//     ],
+//   },
+//   {
+//     id: "premium",
+//     name: "Business Website",
+//     price: 25000,
+//     popular: true,
+//     features: [
+//       "10-page responsive website",
+//       "Custom design",
+//       "E-commerce ready",
+//       "Advanced SEO",
+//       "Analytics integration",
+//       "Social media integration",
+//       "6 months support",
+//       "Content management system",
+//     ],
+//   },
+//   {
+//     id: "enterprise",
+//     name: "Enterprise Solution",
+//     price: 50000,
+//     features: [
+//       "Unlimited pages",
+//       "Custom functionality",
+//       "Advanced e-commerce",
+//       "Multi-language support",
+//       "Third-party integrations",
+//       "Performance optimization",
+//       "12 months support",
+//       "Training included",
+//     ],
+//   },
+//   {
+//     id: "telegram-bot",
+//     name: "Telegram Bot",
+//     price: 10000,
+//     features: [
+//       "Custom bot development",
+//       "User interaction features",
+//       "Database integration",
+//       "Admin panel",
+//       "Analytics dashboard",
+//       "3 months maintenance",
+//     ],
+//   },
+// ];
